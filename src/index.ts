@@ -39,6 +39,14 @@ const titleError = {
         }
     ]
 }
+const availableResError = {
+    "errorsMessages": [
+        {
+            "message": "the availableResolutions is not correct",
+            "field": "availableResolutions"
+        }
+    ]
+}
 
 const parserMiddleware = bodyParser({})
 app.use(parserMiddleware)
@@ -75,32 +83,35 @@ app.delete('/videos/:id', (req:Request, res:Response) => {
 
 
 app.post('/videos', (req:Request, res:Response) => {
+    const today = new Date();
+    const nextDay = new Date(new Date().setDate(new Date().getDate() + 1));
     let newAuthor = req.body.author;
     let newTitle = req.body.title;
+    let newResolutions = req.body.availableResolutions;
     if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string'){
         res.status(400).send(titleError)
-        return;
-    }
-    if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string'){
+    } else if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string'){
         res.status(400).send(authorError)
         return;
-    }
-    const newVideo = {
-        id : +(new Date()),
-        title : req.body.title,
-        author : req.body.author,
-        canBeDownloaded	: false,
-        minAgeRestriction :	null,
-        createdAt : new Date().toISOString(),
-        publicationDate : new Date().toISOString(),
-        availableResolutions :	req.body.availableResolutions
+    } else  {
+        const newVideo = {
+            id : +(new Date()),
+            title : req.body.title,
+            author : req.body.author,
+            canBeDownloaded	: false,
+            minAgeRestriction :	null,
+            createdAt : today.toISOString(),
+            publicationDate : nextDay.toISOString(),
+            availableResolutions :	req.body.availableResolutions
 
-}
-if (newVideo){
-    videos.push(newVideo)
-    res.status(201).send(newVideo)
-    return;
+        }
+        if (newVideo){
+            videos.push(newVideo)
+            res.status(201).send(newVideo)
+            return;
+        }
     }
+
  })
 
 app.put('/videos/:id', (req:Request, res:Response) => {
@@ -108,7 +119,6 @@ app.put('/videos/:id', (req:Request, res:Response) => {
     const modifiedTitle : string = req.body.title;
     if (!modifiedTitle || modifiedTitle.length > 40 || !modifiedTitle.trim() || typeof modifiedTitle !== 'string'){
         res.status(400).send(titleError)
-        return;
     } else if (!modifiedAuthor || modifiedAuthor.length > 20 || !modifiedAuthor.trim() || typeof modifiedAuthor !== 'string'){
         res.status(400).send(authorError)
         return;
@@ -119,6 +129,9 @@ app.put('/videos/:id', (req:Request, res:Response) => {
         video.title = req.body.title;
         video.author = req.body.author;
         video.availableResolutions = req.body.availableResolutions;
+        video.canBeDownloaded = req.body.canBeDownloaded,
+        video.minAgeRestriction = req.body.minAgeRestriction,
+        video.publicationDate = req.body.publicationDate
            res.send(204)
            return;
     } else {
