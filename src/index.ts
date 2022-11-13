@@ -47,6 +47,14 @@ const availableResError = {
         }
     ]
 }
+const canBeError = {
+    "errorsMessages": [
+        {
+            "message": "the availableResolutions is not correct",
+            "field": "canBeDownloaded"
+        }
+    ]
+};
 
 const parserMiddleware = bodyParser({})
 app.use(parserMiddleware)
@@ -88,10 +96,9 @@ app.post('/videos', (req:Request, res:Response) => {
     let newAuthor = req.body.author;
     let newTitle = req.body.title;
     let newResolutions = req.body.availableResolutions;
-    if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string'){
-        res.status(400).send(titleError)
-    } else if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string'){
-        res.status(400).send(authorError)
+    if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string' ||
+    !newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string'){
+        res.status(400).send(titleError).send(authorError)
         return;
     } else  {
         const newVideo = {
