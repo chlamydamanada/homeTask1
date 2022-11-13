@@ -58,7 +58,7 @@ app.get('/videos/:id', (req:Request, res:Response) => {
     }
     })
 
-app.delete('/', (req:Request, res:Response) => {
+app.delete('/testing/all-data', (req:Request, res:Response) => {
     videos.splice(0,videos.length);
     res.send(204)
  })
@@ -86,7 +86,7 @@ app.post('/videos', (req:Request, res:Response) => {
         return;
     }
     const newVideo = {
-        id : videos.length + 1,
+        id : +(new Date()),
         title : req.body.title,
         author : req.body.author,
         canBeDownloaded	: false,
