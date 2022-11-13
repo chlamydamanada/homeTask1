@@ -106,7 +106,7 @@ app.post('/videos', (req:Request, res:Response) => {
                return;
            }
            i++;
-       } while (i<1);
+       } while (i<2);
     const newVideo = {
                    id: +(new Date()),
                    title: req.body.title,
