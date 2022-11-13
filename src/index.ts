@@ -96,9 +96,12 @@ app.post('/videos', (req:Request, res:Response) => {
     let newAuthor = req.body.author;
     let newTitle = req.body.title;
     let newResolutions = req.body.availableResolutions;
-    if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string' ||
-    !newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string'){
-        res.status(400).send(titleError).send(authorError)
+    function xoxo(newTitle, newAuthor){
+    if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string'){
+        res.status(400).send(titleError)
+    return;
+     } else if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string'){
+        res.status(400).send(authorError)
         return;
     } else  {
         const newVideo = {
@@ -118,7 +121,7 @@ app.post('/videos', (req:Request, res:Response) => {
             return;
         }
     }
-
+}
  })
 
 app.put('/videos/:id', (req:Request, res:Response) => {
