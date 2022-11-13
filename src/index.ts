@@ -96,32 +96,35 @@ app.post('/videos', (req:Request, res:Response) => {
     let newAuthor = req.body.author;
     let newTitle = req.body.title;
     let newResolutions = req.body.availableResolutions;
-    function xoxo(newTitle, newAuthor){
-    if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string'){
-        res.status(400).send(titleError)
-    return;
-     } else if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string'){
-        res.status(400).send(authorError)
-        return;
-    } else  {
-        const newVideo = {
-            id : +(new Date()),
-            title : req.body.title,
-            author : req.body.author,
-            canBeDownloaded	: false,
-            minAgeRestriction :	null,
-            createdAt : today.toISOString(),
-            publicationDate : nextDay.toISOString(),
-            availableResolutions :	req.body.availableResolutions
+    let i = 0;
+       do {
+           if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string') {
+               res.status(400).send(titleError)
+               return;
+           } else if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string') {
+               res.status(400).send(authorError)
+               return;
+           }
+           i++;
+       } while (i<1);
+    const newVideo = {
+                   id: +(new Date()),
+                   title: req.body.title,
+                   author: req.body.author,
+                   canBeDownloaded: false,
+                   minAgeRestriction: null,
+                   createdAt: today.toISOString(),
+                   publicationDate: nextDay.toISOString(),
+                   availableResolutions: req.body.availableResolutions
 
-        }
-        if (newVideo){
-            videos.push(newVideo)
-            res.status(201).send(newVideo)
-            return;
-        }
-    }
-}
+               }
+               if (newVideo) {
+                   videos.push(newVideo)
+                   res.status(201).send(newVideo)
+                   return;
+               }
+
+
  })
 
 app.put('/videos/:id', (req:Request, res:Response) => {
