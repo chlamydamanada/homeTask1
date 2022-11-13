@@ -93,8 +93,9 @@ app.post('/videos', (req:Request, res:Response) => {
         minAgeRestriction :	null,
         createdAt : new Date().toISOString(),
         publicationDate : new Date().toISOString(),
-        availableResolutions :	['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
-    }
+        availableResolutions :	req.body.availableResolutions
+
+}
 if (newVideo){
     videos.push(newVideo)
     res.status(201).send(newVideo)
@@ -117,7 +118,8 @@ app.put('/videos/:id', (req:Request, res:Response) => {
        if(video) {
         video.title = req.body.title;
         video.author = req.body.author;
-        res.send(204)
+        video.availableResolutions = req.body.availableResolutions;
+           res.send(204)
            return;
     } else {
            res.send(404)
