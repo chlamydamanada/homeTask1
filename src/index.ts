@@ -81,7 +81,7 @@ app.post('/videos', (req:Request, res:Response) => {
                    title: newTitle,
                    author: newAuthor,
                    canBeDownloaded: false,
-                   minAgeRestriction: null,
+                   minAgeRestriction: 1,
                    createdAt: today.toISOString(),
                    publicationDate: nextDay.toISOString(),
                    availableResolutions: newResolutions
@@ -97,6 +97,7 @@ app.put('/videos/:id', (req:Request, res:Response) => {
     let modifiedTitle : string = req.body.title;
     let modifiedDownload : boolean = req.body.canBeDownloaded;
     let modifiedAge = req.body.minAgeRestriction;
+    let modifiedDate : string = req.body.publicationDate
     let error :  { "errorsMessages":any[] } = { "errorsMessages": [ ]} ;
     if (!modifiedTitle || modifiedTitle.length > 40 || !modifiedTitle.trim() || typeof modifiedTitle !== 'string'){
         error.errorsMessages.push({ "message": "the title is not correct", "field": "title"})
@@ -110,6 +111,9 @@ app.put('/videos/:id', (req:Request, res:Response) => {
     if (typeof modifiedAge !== "number"|| modifiedAge > 18 ){
         error.errorsMessages.push({ "message": "the minAgeRestriction is not correct", "field": "minAgeRestriction"})
     }
+    if (typeof modifiedDate !== "string") {
+        error.errorsMessages.push({"message": "the minAgeRestriction is not correct", "field": "minAgeRestriction"})
+    }
     if(error.errorsMessages.length){
         res.status(400).send(error)
         return;
@@ -117,12 +121,12 @@ app.put('/videos/:id', (req:Request, res:Response) => {
     const id = +req.params.id;
     const video = videos.find(v => v.id === id)
        if(video) {
-        video.title = modifiedTitle;
-        video.author = modifiedAuthor;
-        video.availableResolutions = req.body.availableResolutions;
+        video.title = modifiedTitle,
+        video.author = modifiedAuthor,
+        video.availableResolutions = req.body.availableResolutions,
         video.canBeDownloaded = modifiedDownload,
         video.minAgeRestriction = modifiedAge,
-        video.publicationDate = req.body.publicationDate
+        video.publicationDate = modifiedDate
            res.send(204)
            return;
     } else {
