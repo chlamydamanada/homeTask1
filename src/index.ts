@@ -63,10 +63,6 @@ const canBeError = {
 const parserMiddleware = bodyParser({})
 app.use(parserMiddleware)
 
-let messages = {
-    errorsMessages: [ ]
-};
-
 app.get('/', (req:Request, res:Response) => {
     res.send(`Hello user`)
 })
@@ -101,22 +97,17 @@ app.delete('/videos/:id', (req:Request, res:Response) => {
 app.post('/videos', (req:Request, res:Response) => {
     const today = new Date();
     const nextDay = new Date(new Date().setDate(new Date().getDate() + 1));
-
-    function ok (req.body.title, req.body.author) {
-        let newAuthor = req.body.author;
-        let newTitle = req.body.title;
-        let newResolutions = req.body.availableResolutions;
-
-        if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string') {
-            messages.errorsMessages.push({message: "the title is not correct", field: "title"})
-            return;
-        }
-        if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string') {
-            messages.errorsMessages.push({message: "the author is not correct", field: "author"})
-            return;
-        }
-        res.status(400).send(messages)
-    }
+    let newAuthor = req.body.author;
+    let newTitle = req.body.title;
+    let newResolutions = req.body.availableResolutions;
+           if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string') {
+               res.status(400).send(titleError)
+               return;
+           }
+           if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string') {
+               res.status(400).send(authorError)
+               return;
+           }
      const newVideo = {
                    id: +(new Date()),
                    title: req.body.title,
