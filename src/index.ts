@@ -55,7 +55,7 @@ const canBeError = {
         }
     ]
 };
-
+let allErrors :  { "errorsMessages": [ ]} = { "errorsMessages": [ ]} ;
 
 
 
@@ -101,27 +101,17 @@ app.post('/videos', (req:Request, res:Response) => {
     let newTitle = req.body.title;
     let newResolutions = req.body.availableResolutions;
            if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string') {
-               res.status(400).send({
-                   "errorsMessages": [
-                       {
-                           "message": "the title is not correct",
-                           "field": "title"
-                       }
-                   ]
-               })
+               allErrors.errorsMessages.push({ "message": "the title is not correct", "field": "title"})
+               res.status(400).send(allErrors)
                return;
            }
            if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string') {
-               res.status(400).send({
-                   "errorsMessages": [
-                       {
-                           "message": "the author is not correct",
-                           "field": "author"
-                       }
-                   ]
-               })
+               allErrors.errorsMessages.push({ "message": "the title is not correct", "field": "author"})
                return;
-           }
+           }res.status(400).send(allErrors)
+
+    })
+
      const newVideo = {
                    id: +(new Date()),
                    title: req.body.title,
