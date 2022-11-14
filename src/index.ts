@@ -96,18 +96,15 @@ app.post('/videos', (req:Request, res:Response) => {
     let newAuthor = req.body.author;
     let newTitle = req.body.title;
     let newResolutions = req.body.availableResolutions;
-    let i = 0;
-       do {
            if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string') {
                res.status(400).send(titleError)
                return;
-           } else if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string') {
+           }
+           if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string') {
                res.status(400).send(authorError)
                return;
            }
-           i++;
-       } while (i<2);
-    const newVideo = {
+     const newVideo = {
                    id: +(new Date()),
                    title: req.body.title,
                    author: req.body.author,
