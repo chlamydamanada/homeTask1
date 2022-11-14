@@ -56,8 +56,16 @@ const canBeError = {
     ]
 };
 
+
+
+
+
 const parserMiddleware = bodyParser({})
 app.use(parserMiddleware)
+
+let messages = {
+    errorsMessages: [ ]
+};
 
 app.get('/', (req:Request, res:Response) => {
     res.send(`Hello user`)
@@ -97,11 +105,13 @@ app.post('/videos', (req:Request, res:Response) => {
     let newTitle = req.body.title;
     let newResolutions = req.body.availableResolutions;
            if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string') {
-               res.status(400).send(titleError)
+               messages.errorsMessages.push({message: "the title is not correct", field: "title"})
+               res.status(400).send(messages)
                return;
            }
            if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string') {
-               res.status(400).send(authorError)
+               messages.errorsMessages.push({message: "the author is not correct", field: "author"})
+               res.status(400).send(messages)
                return;
            }
      const newVideo = {
