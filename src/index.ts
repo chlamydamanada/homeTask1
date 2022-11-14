@@ -9,7 +9,7 @@ const videos = [{
     title :	"video1",
     author:	"Cat",
     canBeDownloaded	: false,
-    minAgeRestriction :	null,
+    minAgeRestriction :	16,
     createdAt : new Date().toISOString(),
     publicationDate : new Date().toISOString(),
 	availableResolutions :	['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
@@ -18,7 +18,7 @@ const videos = [{
         title :	"video2",
         author:	"Dog",
         canBeDownloaded	: false,
-        minAgeRestriction :	null,
+        minAgeRestriction :	5,
         createdAt : new Date().toISOString(),
         publicationDate : new Date().toISOString(),
         availableResolutions :	['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
@@ -107,7 +107,7 @@ app.put('/videos/:id', (req:Request, res:Response) => {
     if (typeof modifiedDownload !== "boolean"){
         error.errorsMessages.push({ "message": "the canBeDownloaded is not correct", "field": "canBeDownloaded"})
     }
-    if ( modifiedAge !== null || typeof modifiedAge !== "number"){
+    if (typeof modifiedAge !== "number"){
         error.errorsMessages.push({ "message": "the minAgeRestriction is not correct", "field": "minAgeRestriction"})
     }
     if(error.errorsMessages.length){
