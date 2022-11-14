@@ -102,12 +102,12 @@ app.put('/videos/:id', (req:Request, res:Response) => {
         error.errorsMessages.push({ "message": "the title is not correct", "field": "title"})
     }
     if (!modifiedAuthor || modifiedAuthor.length > 20 || !modifiedAuthor.trim() || typeof modifiedAuthor !== 'string'){
-        error.errorsMessages.push({ "message": "the title is not correct", "field": "author"})
+        error.errorsMessages.push({ "message": "the author is not correct", "field": "author"})
     }
     if (typeof modifiedDownload !== "boolean"){
         error.errorsMessages.push({ "message": "the canBeDownloaded is not correct", "field": "canBeDownloaded"})
     }
-    if ( modifiedAge !== null || typeof modifiedAge !== "number" || modifiedAge > 18){
+    if ( modifiedAge !== null || typeof modifiedAge !== "number" || modifiedAge >= 18){
         error.errorsMessages.push({ "message": "the minAgeRestriction is not correct", "field": "minAgeRestriction"})
     }
     if(error.errorsMessages.length){
