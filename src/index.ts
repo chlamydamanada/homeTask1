@@ -93,9 +93,10 @@ app.post('/videos', (req:Request, res:Response) => {
  })
 
 app.put('/videos/:id', (req:Request, res:Response) => {
-    const modifiedAuthor : string = req.body.author;
-    const modifiedTitle : string = req.body.title;
-    const modifiedDownload : boolean = req.body.canBeDownloaded;
+    let modifiedAuthor : string = req.body.author;
+    let modifiedTitle : string = req.body.title;
+    let modifiedDownload : boolean = req.body.canBeDownloaded;
+    let modifiedAge = req.body.minAgeRestriction;
     let error :  { "errorsMessages":any[] } = { "errorsMessages": [ ]} ;
     if (!modifiedTitle || modifiedTitle.length > 40 || !modifiedTitle.trim() || typeof modifiedTitle !== 'string'){
         error.errorsMessages.push({ "message": "the title is not correct", "field": "title"})
@@ -106,6 +107,9 @@ app.put('/videos/:id', (req:Request, res:Response) => {
     if (typeof modifiedDownload !== "boolean"){
         error.errorsMessages.push({ "message": "the canBeDownloaded is not correct", "field": "canBeDownloaded"})
     }
+    if ( modifiedAge || typeof modifiedAge !== "number" || modifiedAge > 18 || modifiedAge < 1 ){
+        error.errorsMessages.push({ "message": "the canBeDownloaded is not correct", "field": "canBeDownloaded"})
+    }
     if(error.errorsMessages.length){
         res.status(400).send(error)
         return;
@@ -113,11 +117,11 @@ app.put('/videos/:id', (req:Request, res:Response) => {
     const id = +req.params.id;
     const video = videos.find(v => v.id === id)
        if(video) {
-        video.title = req.body.title;
-        video.author = req.body.author;
+        video.title = modifiedTitle;
+        video.author = modifiedAuthor;
         video.availableResolutions = req.body.availableResolutions;
-        video.canBeDownloaded = req.body.canBeDownloaded,
-        video.minAgeRestriction = req.body.minAgeRestriction,
+        video.canBeDownloaded = modifiedDownload,
+        video.minAgeRestriction = modifiedAge,
         video.publicationDate = req.body.publicationDate
            res.send(204)
            return;
