@@ -101,11 +101,25 @@ app.post('/videos', (req:Request, res:Response) => {
     let newTitle = req.body.title;
     let newResolutions = req.body.availableResolutions;
            if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string') {
-               res.status(400).send(titleError)
+               res.status(400).send({
+                   "errorsMessages": [
+                       {
+                           "message": "the title is not correct",
+                           "field": "title"
+                       }
+                   ]
+               })
                return;
            }
            if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string') {
-               res.status(400).send(authorError)
+               res.status(400).send({
+                   "errorsMessages": [
+                       {
+                           "message": "the author is not correct",
+                           "field": "author"
+                       }
+                   ]
+               })
                return;
            }
      const newVideo = {
