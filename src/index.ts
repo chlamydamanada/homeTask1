@@ -22,43 +22,8 @@ const videos = [{
         createdAt : new Date().toISOString(),
         publicationDate : new Date().toISOString(),
         availableResolutions :	['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
-    }]
-const authorError = {
-    "errorsMessages": [
-        {
-            "message": "the author is not correct",
-            "field": "author"
-        }
-    ]
-}
-const titleError = {
-    "errorsMessages": [
-        {
-            "message": "the title is not correct",
-            "field": "title"
-        }
-    ]
-}
-const availableResError = {
-    "errorsMessages": [
-        {
-            "message": "the availableResolutions is not correct",
-            "field": "availableResolutions"
-        }
-    ]
-}
-const canBeError = {
-    "errorsMessages": [
-        {
-            "message": "the availableResolutions is not correct",
-            "field": "canBeDownloaded"
-        }
-    ]
-};
-let allErrors :  { "errorsMessages": [ ]} = { "errorsMessages": [ ]} ;
-
-
-
+    }];
+const availableResolutions =['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160'];
 
 const parserMiddleware = bodyParser({})
 app.use(parserMiddleware)
@@ -95,53 +60,53 @@ app.delete('/videos/:id', (req:Request, res:Response) => {
 
 
 app.post('/videos', (req:Request, res:Response) => {
-    const today = new Date();
-    const nextDay = new Date(new Date().setDate(new Date().getDate() + 1));
-    let newAuthor = req.body.author;
-    let newTitle = req.body.title;
+    let error :  { "errorsMessages":any[] } = { "errorsMessages": [ ]} ;
+    let newAuthor : string = req.body.author;
+    let newTitle : string = req.body.title;
     let newResolutions = req.body.availableResolutions;
            if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string') {
-               allErrors.errorsMessages.push({ "message": "the title is not correct", "field": "title"})
-               res.status(400).send(allErrors)
-               return;
-           }
+               error.errorsMessages.push({ "message": "the title is not correct", "field": "title"})
+            }
            if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string') {
-               allErrors.errorsMessages.push({ "message": "the title is not correct", "field": "author"})
-               return;
-           }res.status(400).send(allErrors)
-
-    })
-
+               error.errorsMessages.push({ "message": "the title is not correct", "field": "author"})
+           }
+    if(error.errorsMessages.length){
+        res.status(400).send(error)
+        return;
+    }
+     const today = new Date();
+     const nextDay = new Date(new Date().setDate(new Date().getDate() + 1));
      const newVideo = {
                    id: +(new Date()),
-                   title: req.body.title,
-                   author: req.body.author,
+                   title: newTitle,
+                   author: newAuthor,
                    canBeDownloaded: false,
                    minAgeRestriction: null,
                    createdAt: today.toISOString(),
                    publicationDate: nextDay.toISOString(),
-                   availableResolutions: req.body.availableResolutions
-
-               }
-               if (newVideo) {
-                   videos.push(newVideo)
-                   res.status(201).send(newVideo)
-                   return;
-               }
-
-
+                   availableResolutions: newResolutions
+     }
+        videos.push(newVideo)
+        res.status(201).send(newVideo)
+        return;
+    console.log(newVideo)
  })
 
 app.put('/videos/:id', (req:Request, res:Response) => {
     const modifiedAuthor : string = req.body.author;
     const modifiedTitle : string = req.body.title;
+    let error :  { "errorsMessages":any[] } = { "errorsMessages": [ ]} ;
     if (!modifiedTitle || modifiedTitle.length > 40 || !modifiedTitle.trim() || typeof modifiedTitle !== 'string'){
-        res.status(400).send(titleError)
-    } else if (!modifiedAuthor || modifiedAuthor.length > 20 || !modifiedAuthor.trim() || typeof modifiedAuthor !== 'string'){
-        res.status(400).send(authorError)
+        error.errorsMessages.push({ "message": "the title is not correct", "field": "title"})
+    }
+    if (!modifiedAuthor || modifiedAuthor.length > 20 || !modifiedAuthor.trim() || typeof modifiedAuthor !== 'string'){
+        error.errorsMessages.push({ "message": "the title is not correct", "field": "author"})
+    }
+    if(error.errorsMessages.length){
+        res.status(400).send(error)
         return;
-    } else {
-        const id = +req.params.id;
+    }
+    const id = +req.params.id;
     const video = videos.find(v => v.id === id)
        if(video) {
         video.title = req.body.title;
@@ -156,7 +121,6 @@ app.put('/videos/:id', (req:Request, res:Response) => {
            res.send(404)
            return;
        }
-}
 })
 
 app.listen(port, () => {
