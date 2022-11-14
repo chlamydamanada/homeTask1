@@ -81,7 +81,7 @@ app.post('/videos', (req:Request, res:Response) => {
                    title: newTitle,
                    author: newAuthor,
                    canBeDownloaded: false,
-                   minAgeRestriction: 1,
+                   minAgeRestriction: null,
                    createdAt: today.toISOString(),
                    publicationDate: nextDay.toISOString(),
                    availableResolutions: newResolutions
@@ -112,7 +112,7 @@ app.put('/videos/:id', (req:Request, res:Response) => {
         error.errorsMessages.push({ "message": "the minAgeRestriction is not correct", "field": "minAgeRestriction"})
     }
     if (typeof modifiedDate !== "string") {
-        error.errorsMessages.push({"message": "the minAgeRestriction is not correct", "field": "minAgeRestriction"})
+        error.errorsMessages.push({"message": "the publicationDate is not correct", "field": "publicationDate"})
     }
     if(error.errorsMessages.length){
         res.status(400).send(error)
