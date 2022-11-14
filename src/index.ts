@@ -95,12 +95,16 @@ app.post('/videos', (req:Request, res:Response) => {
 app.put('/videos/:id', (req:Request, res:Response) => {
     const modifiedAuthor : string = req.body.author;
     const modifiedTitle : string = req.body.title;
+    const modifiedDownload : boolean = req.body.canBeDownloaded;
     let error :  { "errorsMessages":any[] } = { "errorsMessages": [ ]} ;
     if (!modifiedTitle || modifiedTitle.length > 40 || !modifiedTitle.trim() || typeof modifiedTitle !== 'string'){
         error.errorsMessages.push({ "message": "the title is not correct", "field": "title"})
     }
     if (!modifiedAuthor || modifiedAuthor.length > 20 || !modifiedAuthor.trim() || typeof modifiedAuthor !== 'string'){
         error.errorsMessages.push({ "message": "the title is not correct", "field": "author"})
+    }
+    if (typeof modifiedDownload !== "boolean"){
+        error.errorsMessages.push({ "message": "the canBeDownloaded is not correct", "field": "canBeDownloaded"})
     }
     if(error.errorsMessages.length){
         res.status(400).send(error)
