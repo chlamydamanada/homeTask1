@@ -101,19 +101,22 @@ app.delete('/videos/:id', (req:Request, res:Response) => {
 app.post('/videos', (req:Request, res:Response) => {
     const today = new Date();
     const nextDay = new Date(new Date().setDate(new Date().getDate() + 1));
-    let newAuthor = req.body.author;
-    let newTitle = req.body.title;
-    let newResolutions = req.body.availableResolutions;
-           if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string') {
-               messages.errorsMessages.push({message: "the title is not correct", field: "title"})
-               res.status(400).send(messages)
-               return;
-           }
-           if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string') {
-               messages.errorsMessages.push({message: "the author is not correct", field: "author"})
-               res.status(400).send(messages)
-               return;
-           }
+
+    function ok (req.body.title, req.body.author) {
+        let newAuthor = req.body.author;
+        let newTitle = req.body.title;
+        let newResolutions = req.body.availableResolutions;
+
+        if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string') {
+            messages.errorsMessages.push({message: "the title is not correct", field: "title"})
+            return;
+        }
+        if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string') {
+            messages.errorsMessages.push({message: "the author is not correct", field: "author"})
+            return;
+        }
+        res.status(400).send(messages)
+    }
      const newVideo = {
                    id: +(new Date()),
                    title: req.body.title,
