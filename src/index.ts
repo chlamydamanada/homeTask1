@@ -107,8 +107,8 @@ app.put('/videos/:id', (req:Request, res:Response) => {
     if (typeof modifiedDownload !== "boolean"){
         error.errorsMessages.push({ "message": "the canBeDownloaded is not correct", "field": "canBeDownloaded"})
     }
-    if ( modifiedAge !== null || typeof modifiedAge !== "number" || modifiedAge > 18 || modifiedAge < 1 ){
-        error.errorsMessages.push({ "message": "the modifiedAge is not correct", "field": "modifiedAge"})
+    if ( modifiedAge !== null || typeof modifiedAge !== "number" || modifiedAge > 18){
+        error.errorsMessages.push({ "message": "the minAgeRestriction is not correct", "field": "minAgeRestriction"})
     }
     if(error.errorsMessages.length){
         res.status(400).send(error)
