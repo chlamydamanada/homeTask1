@@ -23,7 +23,7 @@ const videos = [{
         publicationDate : new Date().toISOString(),
         availableResolutions :	['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
     }];
-const availableResolutions =['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160'];
+const validResolutions =['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160'];
 
 const parserMiddleware = bodyParser({})
 app.use(parserMiddleware)
@@ -60,23 +60,39 @@ app.delete('/videos/:id', (req:Request, res:Response) => {
 
 
 app.post('/videos', (req:Request, res:Response) => {
+
     let error :  { "errorsMessages":any[] } = { "errorsMessages": [ ]} ;
     let newAuthor : string = req.body.author;
     let newTitle : string = req.body.title;
     let newResolutions = req.body.availableResolutions;
-           if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string') {
-               error.errorsMessages.push({ "message": "the title is not correct", "field": "title"})
-            }
-           if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string') {
-               error.errorsMessages.push({ "message": "the title is not correct", "field": "author"})
-           }
+
+     if (!newTitle || newTitle.length > 40 || !newTitle.trim() || typeof newTitle !== 'string') {
+      error.errorsMessages.push({ "message": "the title is not correct", "field": "title"})
+      }
+     if (!newAuthor || newAuthor.length > 20 || !newAuthor.trim() || typeof newAuthor !== 'string') {
+      error.errorsMessages.push({ "message": "the title is not correct", "field": "author"})
+      }
+
+     if(Array.isArray(newResolutions) && newResolutions.length < 1) {
+         error.errorsMessages.push({ "message": "the availableResolutions should be an array", "field": "availableResolutions"})
+     }
+    if (newResolutions.length > 0) {
+        for (let i = 0; i < newResolutions.length; i ++ ){
+        const  isInclud =  validResolutions.includes(newResolutions[i]);
+        if (!isInclud){
+            error.errorsMessages.push({ "message": "the availableResolutions is not correct", "field": "availableResolutions"})
+            break;
+        }
+        }
+    }
+
     if(error.errorsMessages.length){
         res.status(400).send(error)
         return;
     }
      const today = new Date();
      const nextDay = new Date(new Date().setDate(new Date().getDate() + 1));
-     const newVideo = {
+     const newVideo : any = {
                    id: +(new Date()),
                    title: newTitle,
                    author: newAuthor,
@@ -89,8 +105,7 @@ app.post('/videos', (req:Request, res:Response) => {
         videos.push(newVideo)
         res.status(201).send(newVideo)
         return;
-    console.log(newVideo)
- })
+})
 
 app.put('/videos/:id', (req:Request, res:Response) => {
     let modifiedAuthor : string = req.body.author;
